@@ -8,6 +8,7 @@
 #ifndef __CHAIN_H__
 #define __CHAIN_H__
 #include <iostream>
+#include <exception>
 
 template <typename T>
 struct chainNode
@@ -44,6 +45,7 @@ public:
     void clear();
     void setSize(int);
     void binSort(int);
+    void radixSort(int, int);
     
     class iterator
     {
@@ -64,6 +66,13 @@ public:
         bool operator!=(const iterator & iter) { return node != iter.node; };
     };
 };
+
+int findDigit(int num, int r, int j)
+{
+    for (int i = 0; i < j; ++i)
+        num = num / r;
+    return num % r;
+}
 
 template <typename T>
 void chain<T>::checkIndex(int index) const
@@ -260,6 +269,48 @@ void chain<T>::binSort(int range)
     delete [] top;
 }
 
+template <typename T>
+void chain<T>::radixSort(int r, int d)
+{
+    for (int j = 0; j < d; ++j)
+    {
+        chainNode<T> ** bottom = new chainNode<T> * [r];
+        for (int i = 0 ; i < r; ++i)
+            bottom[r] = nullptr;
+        chainNode<T> ** top = new chainNode<T> * [r];
+        
+        for (;firstNode != nullptr; firstNode = firstNode -> next)
+        {
+            int digit = findDigit(firstNode -> element, r, j);
+            if (bottom[digit] == nullptr)
+                bottom[digit] = top[digit] = firstNode;
+            else
+            {
+                top[digit] -> next = firstNode;
+                top[digit] = firstNode;
+            }
+        }
+        chainNode<T> * pNode = nullptr;
+        for (int i = 0; i < r; ++i)
+            if (bottom[i] != nullptr)
+            {
+                if (pNode == nullptr)
+                {
+                    pNode = top[i];
+                    firstNode = bottom[i];
+                }
+                else
+                {
+                    pNode -> next = bottom[i];
+                    pNode = top[i];
+                }
+            }
+        if (pNode != nullptr)
+            pNode -> next = nullptr;
+        delete [] top;
+        delete [] bottom;
+    }
+}
 
 
 
