@@ -5,10 +5,11 @@
 //  Created by Mingze Lee on 2024/10/9.
 //
 
+
 #ifndef __CHAIN_H__
 #define __CHAIN_H__
 #include <iostream>
-#include <exception>
+
 
 template <typename T>
 struct chainNode
@@ -41,7 +42,8 @@ public:
     void erase(int index);
     void insert(int index, const T & theElement);
     void output(std::ostream & os) const;
-    friend std::ostream & operator<<(std::ostream &, const chain<T> &);
+    template <typename U>
+    friend std::ostream & operator<<(std::ostream &, const chain<U> &);
     void clear();
     void setSize(int);
     void binSort(int);
@@ -198,6 +200,13 @@ void chain<T>::output(std::ostream & os) const
     }
 }
 
+template <class T>
+std::ostream & operator<<(std::ostream & os, const chain<T> & myChain)
+{
+    myChain.output(os);
+    return os;
+}
+
 template <typename T>
 void chain<T>::clear()
 {
@@ -313,5 +322,8 @@ void chain<T>::radixSort(int r, int d)
 }
 
 
-
 #endif
+
+
+
+
